@@ -31,7 +31,7 @@ function Header() {
 
     return (
         <header className='h-[100px] sticky top-0 md:h-22 w-full bg-slate-50 z-50'>
-            <div className="h-full max-w-5xl lg:max-w-7xl mx-auto flex justify-end md:justify-between items-center p-4">
+            <div className="h-full max-w-5xl lg:max-w-7xl mx-auto flex justify-between items-center p-4">
                 <div className="mb-8 mt-5">
                     {isAdmin && <AddTextDrawer />}
                 </div>
