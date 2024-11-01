@@ -26,8 +26,8 @@ export default function Home() {
   const [scores, setScores] = useState({
     relevance: 0,
     coherence: 0,
-    readability: 0,
-    conciseness: 0
+    correctness: 0,
+    clarity: 0
   })
 
   const handleOnChange = (name: string, value: number) => {
@@ -178,10 +178,10 @@ export default function Home() {
           <h3 className="text-md text-gray-700 mb-2">Rate the summary on each category below, from 1 to 10. Use the Tab key to move between input fields, and Shift + Tab to go back, And the <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-blue-100 px-1.5 font-mono text-[10px] font-medium text-black opacity-100"><ArrowUp /></kbd> and <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-blue-100 px-1.5 font-mono text-[10px] font-medium text-black opacity-100"><ArrowDown /></kbd> arrow keys to increase or decrease the rating.</h3>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <ScoreBox name="relevance" onChange={handleOnChange} title="Relevance" description="How well does the summary capture the essential points of the original text?" />
-          <ScoreBox name="coherence" onChange={handleOnChange} title="Coherence" description="How logically are the ideas connected, and how smoothly does the summary flow?" />
-          <ScoreBox name="readability" onChange={handleOnChange} title="Readability" description="How easy is it to read and understand the summary?" />
-          <ScoreBox name="conciseness" onChange={handleOnChange} title="Conciseness" description="How effectively does the summary convey the main points without unnecessary detail?" />
+          <ScoreBox name="relevance" onChange={handleOnChange} title="Relevance" description="Does it focus on essential information without unnecessary details?" />
+          <ScoreBox name="coherence" onChange={handleOnChange} title="Coherence" description=" Does the summary flow logically and make sense?" />
+          <ScoreBox name="correctness" onChange={handleOnChange} title="Correctness" description="Does the summary accurately reflect the original content?" />
+          <ScoreBox name="clarity" onChange={handleOnChange} title="Clarity" description="Is the summary easy to understand and well-structured?" />
         </div>
         <div className="mt-4">
           <Button onClick={handleSubmit} className="px-8 py-6 w-40 flex justify-center items-center">
