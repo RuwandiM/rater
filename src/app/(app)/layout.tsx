@@ -9,7 +9,7 @@ function AppLayout({ children }: AppLayoutProps) {
     return (
         <main className="flex min-h-screen flex-col items-center justify-between">
             <Header />
-            <div className="flex-1 w-full max-w-7xl p-4">{children}</div>
+            <div className="flex-1 w-full max-w-5xl lg:max-w-7xl p-4">{children}</div>
             <Toaster richColors position="top-center" />
         </main>
     )

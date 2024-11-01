@@ -101,6 +101,7 @@ export function AddTextDrawer() {
                     fullName: user?.fullName,
                     imageUrl: user?.imageUrl
                 },
+                notRated: ['gpt', 'cloude', 'llama'],
                 text: formData,
                 createdAt: new Date().toISOString()
             })
@@ -131,7 +132,7 @@ export function AddTextDrawer() {
     const currentHeader = headers[step - 1]
 
     const getForm = () => (
-        <div className="mx-auto w-full max-w-7xl h-[80dvh] lg:h-[80dvh]">
+        <div className="mx-auto w-full max-w-5xl lg:max-w-7xl h-[80dvh] lg:h-[80dvh]">
             <DrawerHeader className="flex justify-between items-start">
                 <div className="flex flex-col items-start gap-2">
                     <DrawerTitle>{currentHeader.title}</DrawerTitle>
@@ -188,7 +189,7 @@ export function AddTextDrawer() {
     )
 
     const getLoading = () => (
-        <div className="mx-auto w-full max-w-7xl h-[80dvh] lg:h-[80dvh]">
+        <div className="mx-auto w-full max-w-5xl lg:max-w-7xl h-[80dvh] lg:h-[80dvh]">
             <div className="flex flex-col justify-center gap-10 items-center w-full h-full">
                 <span className="loader"></span>
             </div>
