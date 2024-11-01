@@ -75,7 +75,7 @@ export default function Home() {
   }
 
   const handleSubmit = async () => {
-    if (scores.relevance === 0 || scores.coherence === 0 || scores.readability === 0 || scores.conciseness === 0) {
+    if (scores.relevance === 0 || scores.coherence === 0 || scores.correctness === 0 || scores.clarity === 0) {
       toast.error("Error", {
         description: "Please rate all categories before submitting",
       })
