@@ -38,6 +38,9 @@ function Header() {
                 <div className="flex gap-6">
 
                     {isAdmin && getNav()}
+                    <Button variant="link">
+                        <Link href="/data-grid">data-grid (testing)</Link>
+                    </Button>
                     <SignedIn>
                         <UserButton />
                     </SignedIn>
