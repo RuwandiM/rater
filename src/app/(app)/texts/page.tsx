@@ -147,7 +147,7 @@ export default function StickyHeaderTable() {
 
     return (
         <div>
-            <div className="relative h-[500px] overflow-auto border rounded-md">
+            <div className="relative h-[70dvh] overflow-auto border rounded-md">
                 <table className="w-full border-collapse">
                     <thead className="sticky top-0 bg-gray-100 shadow-sm z-10">
                         <tr>
