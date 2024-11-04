@@ -33,14 +33,32 @@ function Header() {
         <header className='h-[100px] sticky top-0 md:h-22 w-full bg-slate-50 z-50'>
             <div className="h-full max-w-5xl lg:max-w-7xl mx-auto flex justify-between items-center p-4">
                 <div className="mb-8 mt-5">
-                    {isAdmin && <AddTextDrawer />}
-                </div>
-                <div className="flex gap-6">
 
-                    {isAdmin && getNav()}
-                    <Button variant="link">
-                        <Link href="/data-grid">data-grid (testing)</Link>
-                    </Button>
+                </div>
+                <div className="flex gap-2">
+                    {
+                        isAdmin && (
+                            <>
+                                <Button variant="link">
+                                    <Link href="/">
+                                        <p>Rate</p>
+                                    </Link>
+                                </Button>
+                                <Button variant="link">
+                                    <Link href="/texts">
+                                        <p>Texts</p>
+                                    </Link>
+                                </Button>
+
+                                <Button variant="link">
+                                    <Link href="/results">
+                                        <p>Results</p>
+                                    </Link>
+                                </Button>
+                            </>
+                        )
+                    }
+                    {isAdmin && <AddTextDrawer />}
                     <SignedIn>
                         <UserButton />
                     </SignedIn>

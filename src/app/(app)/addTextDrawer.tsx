@@ -127,6 +127,7 @@ export function AddTextDrawer() {
         setStatus(STATUS.FORM)
         restFormData()
         setStep(1)
+        location.reload()
     }
 
     const currentHeader = headers[step - 1]
@@ -231,7 +232,7 @@ export function AddTextDrawer() {
 
     return (
         <>
-            <Button onClick={() => setIsDrawerOpen(true)}>
+            <Button className="mr-2" onClick={() => setIsDrawerOpen(true)}>
                 <p>Add New </p> <Plus />
             </Button>
             <Drawer dismissible={false} open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
