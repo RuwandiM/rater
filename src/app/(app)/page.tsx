@@ -8,6 +8,7 @@ import db from "../../../firebase/firestore";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { useUser } from "@clerk/nextjs";
 
 type documentType = {
   id: string,
@@ -19,6 +20,7 @@ type documentType = {
 const AIs = ['cloude', 'gpt', 'llama']
 
 export default function Home() {
+  const { user } = useUser()
   const [document, setDocument] = useState<documentType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedAi, setSelectedAi] = useState(AIs[0]);
@@ -108,7 +110,15 @@ export default function Home() {
       await updateDoc(docRef, {
         scores: {
           ...data.scores,
-          [selectedAi]: scores
+          [selectedAi]: {
+            ratedBy: {
+              id: user?.id,
+              email: user?.emailAddresses[0].emailAddress,
+              fullName: user?.fullName,
+              imageUrl: user?.imageUrl
+            },
+            scores: scores
+          }
         },
         notRated: uploadData.notRated
       })
