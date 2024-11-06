@@ -270,16 +270,20 @@ export default function StickyHeaderTable() {
                 </div>
                 <div className=" flex-grow"></div>
                 <div className="border-2 rounded-sm p-2 flex gap-3 justify-center items-center">
-                    <p className="font-bold">Total GPT: </p>
+                    <p className="font-bold">GPT: </p>
                     <h1 className='text-xl font-bold'>{totalRatingCounts.gpt}</h1>
                 </div>
                 <div className="border-2 rounded-sm p-2 flex gap-3 justify-center items-center">
-                    <p className="font-bold">Total Claude: </p>
+                    <p className="font-bold">Claude: </p>
                     <h1 className='text-xl font-bold'>{totalRatingCounts.cloude}</h1>
                 </div>
                 <div className="border-2 rounded-sm p-2 flex gap-3 justify-center items-center">
-                    <p className="font-bold">Total Llama: </p>
+                    <p className="font-bold">Llama: </p>
                     <h1 className='text-xl font-bold'>{totalRatingCounts.llama}</h1>
+                </div>
+                <div className="border-2 rounded-sm p-2 flex gap-3 justify-center items-center">
+                    <p className="font-bold">Total: </p>
+                    <h1 className='text-xl font-bold'>{totalRatingCounts.gpt + totalRatingCounts.cloude + totalRatingCounts.llama}</h1>
                 </div>
             </div>
         </div>
