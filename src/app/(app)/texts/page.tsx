@@ -24,6 +24,7 @@ export default function StickyHeaderTable() {
     const [tableData, setTableData] = useState<any>([])
     const [deleteId, setDeleteId] = useState<string | null>(null)
     const [isDataLoading, setIsDataLoading] = useState<boolean>(false)
+    const [totalRatingCounts, setTotalRatingCounts] = useState({ gpt: 0, cloude: 0, llama: 0 })
 
     const fetchData = async () => {
         try {
@@ -31,7 +32,6 @@ export default function StickyHeaderTable() {
             const q = query(collection(db, "summaries"), orderBy("createdAt", "desc"))
             const querySnapshot = await getDocs(q)
             const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-            console.log(data)
             setTableData(data)
         } catch (error) {
             console.error("Error fetching data: ", error)
@@ -61,6 +61,20 @@ export default function StickyHeaderTable() {
     useEffect(() => {
         fetchData()
     }, [])
+
+    useEffect(() => {
+        if (tableData.length > 0) {
+            const total = tableData.reduce((acc: any, item: any) => {
+                if(item['scores']){
+                    acc.gpt += item['scores']['gpt'] ? 1 : 0
+                    acc.cloude += item['scores']['cloude'] ? 1 : 0
+                    acc.llama += item['scores']['llama'] ? 1 : 0
+                }
+                return acc
+            }, { gpt: 0, cloude: 0, llama: 0 })
+            setTotalRatingCounts(total)
+        }
+    }, [tableData])
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleString()
@@ -249,10 +263,23 @@ export default function StickyHeaderTable() {
                     </tbody>
                 </table>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 mt-2 gap-4">
+            <div className="flex justify-between items-center mt-2 gap-4">
                 <div className="border-2 rounded-sm p-2 flex gap-3 justify-center items-center">
                     <p className="font-bold">Total Records: </p>
                     <h1 className='text-xl font-bold'>{tableData.length}</h1>
+                </div>
+                <div className=" flex-grow"></div>
+                <div className="border-2 rounded-sm p-2 flex gap-3 justify-center items-center">
+                    <p className="font-bold">Total GPT: </p>
+                    <h1 className='text-xl font-bold'>{totalRatingCounts.gpt}</h1>
+                </div>
+                <div className="border-2 rounded-sm p-2 flex gap-3 justify-center items-center">
+                    <p className="font-bold">Total Claude: </p>
+                    <h1 className='text-xl font-bold'>{totalRatingCounts.cloude}</h1>
+                </div>
+                <div className="border-2 rounded-sm p-2 flex gap-3 justify-center items-center">
+                    <p className="font-bold">Total Llama: </p>
+                    <h1 className='text-xl font-bold'>{totalRatingCounts.llama}</h1>
                 </div>
             </div>
         </div>
