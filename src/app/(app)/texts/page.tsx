@@ -281,7 +281,7 @@ export default function StickyHeaderTable() {
                     <p className="font-bold">Llama: </p>
                     <h1 className='text-xl font-bold'>{totalRatingCounts.llama}</h1>
                 </div>
-                <div className="border-2 rounded-sm p-2 flex gap-3 justify-center items-center">
+                <div className="border-2 rounded-sm p-2 flex gap-3 justify-center items-center ml-6">
                     <p className="font-bold">Total: </p>
                     <h1 className='text-xl font-bold'>{totalRatingCounts.gpt + totalRatingCounts.cloude + totalRatingCounts.llama}</h1>
                 </div>
