@@ -5,7 +5,7 @@ import { collection, doc, getDoc, getDocs, query, updateDoc, where } from "@fire
 import { ArrowDown, ArrowUp, CheckCircle, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import db from "../../../firebase/firestore";
-import { ReloadIcon } from "@radix-ui/react-icons";
+import { ReloadIcon, ValueIcon } from "@radix-ui/react-icons";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { useUser } from "@clerk/nextjs";
