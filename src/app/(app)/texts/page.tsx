@@ -1,10 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Edit2, Trash2 } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { collection, deleteDoc, doc, getDocs, orderBy, query } from '@firebase/firestore'
 import db from '../../../../firebase/firestore'
 import {
@@ -18,18 +17,19 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button';
+
+const selectedAi = "sumup-ai";
 
 export default function StickyHeaderTable() {
     const [tableData, setTableData] = useState<any>([])
     const [deleteId, setDeleteId] = useState<string | null>(null)
     const [isDataLoading, setIsDataLoading] = useState<boolean>(false)
-    const [totalRatingCounts, setTotalRatingCounts] = useState({ gpt: 0, cloude: 0, llama: 0 })
 
     const fetchData = async () => {
         try {
             setIsDataLoading(true)
-            const q = query(collection(db, "summaries"), orderBy("createdAt", "desc"))
+            const q = query(collection(db, "evaluated-summaries"), orderBy("createdAt", "desc"))
             const querySnapshot = await getDocs(q)
             const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
             setTableData(data)
@@ -40,11 +40,10 @@ export default function StickyHeaderTable() {
         }
     }
 
-
     const handleDelete = async () => {
         if (deleteId) {
             try {
-                const docRef = doc(db, "summaries", deleteId)
+                const docRef = doc(db, "evaluated-summaries", deleteId)
                 await deleteDoc(docRef)
                 setTableData(tableData.filter((item: any) => item.id !== deleteId))
                 console.log(`Document with ID ${deleteId} deleted successfully.`)
@@ -57,24 +56,13 @@ export default function StickyHeaderTable() {
         setDeleteId(null)
     }
 
-
     useEffect(() => {
         fetchData()
     }, [])
 
-    useEffect(() => {
-        if (tableData.length > 0) {
-            const total = tableData.reduce((acc: any, item: any) => {
-                if(item['scores']){
-                    acc.gpt += item['scores']['gpt'] ? 1 : 0
-                    acc.cloude += item['scores']['cloude'] ? 1 : 0
-                    acc.llama += item['scores']['llama'] ? 1 : 0
-                }
-                return acc
-            }, { gpt: 0, cloude: 0, llama: 0 })
-            setTotalRatingCounts(total)
-        }
-    }, [tableData])
+    const getTotalRatingCount = (data: any, ai: string) => {
+        return (data[ai].scores.relevance + data[ai].scores.coherence + data[ai].scores.correctness + data[ai].scores.clarity ) / 4
+    }
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleString()
@@ -169,10 +157,9 @@ export default function StickyHeaderTable() {
                             <th className="p-2 text-left border-b">Original Text</th>
                             <th className="p-2 text-left border-b">Created By</th>
                             <th className="p-2 text-left border-b">Created At</th>
-                            <th className="p-2 text-left border-b">GPT</th>
-                            <th className="p-2 text-left border-b">Claude</th>
-                            <th className="p-2 text-left border-b">Llama</th>
-                            <th className="p-2 text-right border-b">Actions</th>
+                            <th className="p-2 text-left border-b">Evaluated By</th>
+                            <th className="p-2 text-left border-b">Evaluated score</th>
+                            <th className="p-2 text-right border-b">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -198,63 +185,26 @@ export default function StickyHeaderTable() {
                                     </div>
                                 </td>
                                 <td width={200} className="p-1 border-b text-sm">{formatDate(row.createdAt)}</td>
-                                <td className="p-2 border-b">
-                                    {isAi(row.notRated, 'gpt') ? (
-                                        <TooltipProvider>
-                                            <Tooltip>
-                                                <TooltipTrigger>
-                                                    <Avatar className='w-8 h-8'>
-                                                        <AvatarImage src={getRatedByAvatar(row.scores, 'gpt')} alt={getRatedByName(row.scores, 'gpt')} />
-                                                        <AvatarFallback>{getRatedByName(row.scores, 'gpt')}</AvatarFallback>
-                                                    </Avatar>
-                                                </TooltipTrigger>
-                                                <TooltipContent>
-                                                    <p>{getRatedByName(row.scores, 'gpt')}</p>
-                                                </TooltipContent>
-                                            </Tooltip>
-                                        </TooltipProvider>
-                                    ) : (
-                                        <span className="text-gray-400">-</span>
-                                    )}
+                                <td width={120} className="p-2 border-b">
+                                    {!row.notRated ? (
+                                        <div className="flex items-center justify-center space-x-2">
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger>
+                                                        <Avatar className='w-8 h-8'>
+                                                        <AvatarImage src={getRatedByAvatar(row.scores, selectedAi)} alt={getRatedByName(row.scores, selectedAi)} />
+                                                        <AvatarFallback>{getRatedByName(row.scores, selectedAi)}</AvatarFallback>
+                                                        </Avatar>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>
+                                                        <p>{row.createdBy.fullName}</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
+                                        </div>
+                                    ) : <p>-</p> }
                                 </td>
-                                <td className="p-2 border-b">
-                                    {isAi(row.notRated, 'cloude') ? (
-                                        <TooltipProvider>
-                                            <Tooltip>
-                                                <TooltipTrigger>
-                                                    <Avatar className='w-8 h-8'>
-                                                        <AvatarImage src={getRatedByAvatar(row.scores, 'cloude')} alt={getRatedByName(row.scores, 'cloude')} />
-                                                        <AvatarFallback>{getRatedByName(row.scores, 'cloude')}</AvatarFallback>
-                                                    </Avatar>
-                                                </TooltipTrigger>
-                                                <TooltipContent>
-                                                    <p>{getRatedByName(row.scores, 'cloude')}</p>
-                                                </TooltipContent>
-                                            </Tooltip>
-                                        </TooltipProvider>
-                                    ) : (
-                                        <span className="text-gray-400">-</span>
-                                    )}
-                                </td>
-                                <td className="p-2 border-b">
-                                    {isAi(row.notRated, "llama") ? (
-                                        <TooltipProvider>
-                                            <Tooltip>
-                                                <TooltipTrigger>
-                                                    <Avatar className='w-8 h-8'>
-                                                        <AvatarImage src={getRatedByAvatar(row.scores, 'llama')} alt={getRatedByName(row.scores, 'llama')} />
-                                                        <AvatarFallback>{getRatedByName(row.scores, 'llama')}</AvatarFallback>
-                                                    </Avatar>
-                                                </TooltipTrigger>
-                                                <TooltipContent>
-                                                    <p>{getRatedByName(row.scores, 'llama')}</p>
-                                                </TooltipContent>
-                                            </Tooltip>
-                                        </TooltipProvider>
-                                    ) : (
-                                        <span className="text-gray-400">-</span>
-                                    )}
-                                </td>
+                                <td width={200} className="p-1 border-b text-sm">{!row.notRated ? (getTotalRatingCount(row.scores, selectedAi)) : '-'}</td>
                                 <td className="p-2 text-right border-b flex items-start justify-evenly gap-4">
                                     {ConfirmDialog(row.id)}
                                 </td>
@@ -267,23 +217,6 @@ export default function StickyHeaderTable() {
                 <div className="border-2 rounded-sm p-2 flex gap-3 justify-center items-center">
                     <p className="font-bold">Total Records: </p>
                     <h1 className='text-xl font-bold'>{tableData.length}</h1>
-                </div>
-                <div className=" flex-grow"></div>
-                <div className="border-2 rounded-sm p-2 flex gap-3 justify-center items-center">
-                    <p className="font-bold">GPT: </p>
-                    <h1 className='text-xl font-bold'>{totalRatingCounts.gpt}</h1>
-                </div>
-                <div className="border-2 rounded-sm p-2 flex gap-3 justify-center items-center">
-                    <p className="font-bold">Claude: </p>
-                    <h1 className='text-xl font-bold'>{totalRatingCounts.cloude}</h1>
-                </div>
-                <div className="border-2 rounded-sm p-2 flex gap-3 justify-center items-center">
-                    <p className="font-bold">Llama: </p>
-                    <h1 className='text-xl font-bold'>{totalRatingCounts.llama}</h1>
-                </div>
-                <div className="border-2 rounded-sm p-2 flex gap-3 justify-center items-center ml-6">
-                    <p className="font-bold">Total: </p>
-                    <h1 className='text-xl font-bold'>{totalRatingCounts.gpt + totalRatingCounts.cloude + totalRatingCounts.llama}</h1>
                 </div>
             </div>
         </div>

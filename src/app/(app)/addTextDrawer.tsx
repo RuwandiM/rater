@@ -24,20 +24,10 @@ const headers = [
         description: "Original Text Paragraph to be summarized",
     },
     {
-        title: "GPT Generated Summary",
-        name: "gpt",
-        description: "GPT-4o"
+        title: "Sumup-ai Generated Summary",
+        name: "sumup-ai",
+        description: "Sumup-ai"
     },
-    {
-        title: "Cloude Generated Summary",
-        name: "cloude",
-        description: "Cloude 3.5 Sonnet"
-    },
-    {
-        title: "Llama 3 Generated Summary",
-        name: "llama",
-        description: "Llama-3.1405B"
-    }
 ]
 
 type formDataType = {
@@ -94,14 +84,14 @@ export function AddTextDrawer() {
 
         try {
             setStatus(STATUS.LOADING)
-            const doc = await addDoc(collection(db, 'summaries'), {
+            const doc = await addDoc(collection(db, 'evaluated-summaries'), {
                 createdBy: {
                     id: user?.id,
                     email: user?.emailAddresses[0].emailAddress,
                     fullName: user?.fullName,
                     imageUrl: user?.imageUrl
                 },
-                notRated: ['gpt', 'cloude', 'llama'],
+                notRated: true,
                 text: formData,
                 createdAt: new Date().toISOString()
             })
