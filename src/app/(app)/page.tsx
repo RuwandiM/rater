@@ -10,6 +10,8 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { useUser } from "@clerk/nextjs";
 
+const selectedAi = "sumup-ai";
+
 type documentType = {
   id: string,
   originalText: string,
@@ -17,13 +19,10 @@ type documentType = {
   selectedAi: string
 }
 
-const AIs = ['cloude', 'gpt', 'llama']
-
 export default function Home() {
   const { user } = useUser()
   const [document, setDocument] = useState<documentType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedAi, setSelectedAi] = useState(AIs[0]);
   const [isAlRated, setIsAlRated] = useState(false);
   const [scores, setScores] = useState({
     relevance: 0,
@@ -39,13 +38,13 @@ export default function Home() {
   const getRandomDocument = async () => {
     try {
       setIsLoading(true);
-      const summariesRef = collection(db, 'summaries');
+      const summariesRef = collection(db, 'evaluated-summaries');
       const snapshot = await getDocs(summariesRef);
       let filteredDocs: any = [];
       snapshot.forEach((doc) => {
         const data = doc.data();
 
-        if (!data.hasOwnProperty('notRated') || data.notRated.length !== 0) {
+        if (!!data.notRated) {
           filteredDocs.push({ id: doc.id, ...data });
         }
       });
@@ -54,13 +53,11 @@ export default function Home() {
         setIsAlRated(false);
         const randomIndex = Math.floor(Math.random() * filteredDocs.length);
         const document = filteredDocs[randomIndex];
-        const randomAi = document.notRated[Math.floor(Math.random() * document.notRated.length)];
-        setSelectedAi(randomAi);
         setDocument({
           id: document.id,
           originalText: document.text.original,
-          aiText: document.text[randomAi],
-          selectedAi: randomAi
+          aiText: document.text[selectedAi],
+          selectedAi: selectedAi
         });
 
       } else {
@@ -89,7 +86,7 @@ export default function Home() {
       if (!document?.id) {
         throw new Error("Document ID is undefined");
       }
-      const docRef = doc(db, 'summaries', document.id);
+      const docRef = doc(db, 'evaluated-summaries', document.id);
       const Doc = await getDoc(docRef);
       if (!doc) {
         throw new Error("Document not found");
@@ -98,13 +95,6 @@ export default function Home() {
       const data = Doc.data();
       if (!data) {
         throw new Error("Data not found");
-      }
-
-      let uploadData: any = {}
-      if (!data.hasOwnProperty('notRated')) {
-        uploadData['notRated'] = AIs.filter((ai: string) => ai !== selectedAi);
-      } else {
-        uploadData['notRated'] = data.notRated.filter((ai: string) => ai !== selectedAi);
       }
 
       await updateDoc(docRef, {
@@ -120,7 +110,7 @@ export default function Home() {
             scores: scores
           }
         },
-        notRated: uploadData.notRated
+        notRated: false
       })
       console.log("Scores submitted successfully");
 
@@ -204,7 +194,7 @@ export default function Home() {
   );
 }
 
-function Paragraph({ originalText, aiGeneratedText, selectedAi, onClick }: {
+function Paragraph({ originalText, aiGeneratedText, onClick }: {
   originalText: string,
   aiGeneratedText: string,
   selectedAi: string,
