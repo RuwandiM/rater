@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { useUser } from "@clerk/nextjs";
 
-const selectedAi = "sumup-ai";
+const selectedAi = "sumup-ai-with-category";
 
 type documentType = {
   id: string,
@@ -44,7 +44,7 @@ export default function Home() {
       snapshot.forEach((doc) => {
         const data = doc.data();
 
-        if (!!data.notRated) {
+        if (!!data.notRatedWithCategory) {
           filteredDocs.push({ id: doc.id, ...data });
         }
       });
@@ -53,6 +53,7 @@ export default function Home() {
         setIsAlRated(false);
         const randomIndex = Math.floor(Math.random() * filteredDocs.length);
         const document = filteredDocs[randomIndex];
+        console.log("document.id random selected", document.id); 
         setDocument({
           id: document.id,
           originalText: document.text.original,
@@ -93,6 +94,7 @@ export default function Home() {
       }
 
       const data = Doc.data();
+      console.log("Document data:", data);
       if (!data) {
         throw new Error("Data not found");
       }
@@ -110,7 +112,7 @@ export default function Home() {
             scores: scores
           }
         },
-        notRated: false
+        notRatedWithCategory: false
       })
       console.log("Scores submitted successfully");
 

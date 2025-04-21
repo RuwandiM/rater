@@ -19,7 +19,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from '@/components/ui/button';
 
-const selectedAi = "sumup-ai";
+const sumupaiWithoutCategory = "sumup-ai";
+const sumupaiWithCategory = "sumup-ai-with-category";
 
 export default function StickyHeaderTable() {
     const [tableData, setTableData] = useState<any>([])
@@ -155,10 +156,10 @@ export default function StickyHeaderTable() {
                         <tr>
                             <th className="p-2 text-center border-b">#</th>
                             <th className="p-2 text-left border-b">Original Text</th>
-                            <th className="p-2 text-left border-b">Created By</th>
-                            <th className="p-2 text-left border-b">Created At</th>
-                            <th className="p-2 text-left border-b">Evaluated By</th>
-                            <th className="p-2 text-left border-b">Evaluated score</th>
+                            <th className="p-2 text-left border-b">Evaluated By(without cat.)</th>
+                            <th className="p-2 text-left border-b">Evaluated score(without cat.)</th>
+                            <th className="p-2 text-left border-b">Evaluated By(with cat.)</th>
+                            <th className="p-2 text-left border-b">Evaluated score(with cat.)</th>
                             <th className="p-2 text-right border-b">Action</th>
                         </tr>
                     </thead>
@@ -168,32 +169,14 @@ export default function StickyHeaderTable() {
                                 <td width={50} className="p-2 border-b text-center font-semibold text-sm">{index + 1}</td>
                                 <td width={400} className="p-2 border-b text-sm">{truncateText(row?.text?.original, 15)}</td>
                                 <td width={120} className="p-2 border-b">
-                                    <div className="flex items-center justify-center space-x-2">
-                                        <TooltipProvider>
-                                            <Tooltip>
-                                                <TooltipTrigger>
-                                                    <Avatar className='w-8 h-8'>
-                                                        <AvatarImage sizes='md' src={row.createdBy.imageUrl} alt={row.createdBy.fullName} />
-                                                        <AvatarFallback className='text-sm'>{row?.createdBy?.fullName?.split(' ').map((n: any) => n[0]).join('')}</AvatarFallback>
-                                                    </Avatar>
-                                                </TooltipTrigger>
-                                                <TooltipContent>
-                                                    <p>{row.createdBy.fullName}</p>
-                                                </TooltipContent>
-                                            </Tooltip>
-                                        </TooltipProvider>
-                                    </div>
-                                </td>
-                                <td width={200} className="p-1 border-b text-sm">{formatDate(row.createdAt)}</td>
-                                <td width={120} className="p-2 border-b">
                                     {!row.notRated ? (
                                         <div className="flex items-center justify-center space-x-2">
                                             <TooltipProvider>
                                                 <Tooltip>
                                                     <TooltipTrigger>
                                                         <Avatar className='w-8 h-8'>
-                                                        <AvatarImage src={getRatedByAvatar(row.scores, selectedAi)} alt={getRatedByName(row.scores, selectedAi)} />
-                                                        <AvatarFallback>{getRatedByName(row.scores, selectedAi)}</AvatarFallback>
+                                                        <AvatarImage src={getRatedByAvatar(row.scores, sumupaiWithoutCategory)} alt={getRatedByName(row.scores, sumupaiWithoutCategory)} />
+                                                        <AvatarFallback>{getRatedByName(row.scores, sumupaiWithoutCategory)}</AvatarFallback>
                                                         </Avatar>
                                                     </TooltipTrigger>
                                                     <TooltipContent>
@@ -204,7 +187,27 @@ export default function StickyHeaderTable() {
                                         </div>
                                     ) : <p>-</p> }
                                 </td>
-                                <td width={200} className="p-1 border-b text-sm">{!row.notRated ? (getTotalRatingCount(row.scores, selectedAi)) : '-'}</td>
+                                <td width={200} className="p-1 border-b text-sm">{!row.notRated ? (getTotalRatingCount(row.scores, sumupaiWithoutCategory)) : '-'}</td>
+                                <td width={120} className="p-2 border-b">
+                                    {!row.notRatedWithCategory ? (
+                                        <div className="flex items-center justify-center space-x-2">
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger>
+                                                        <Avatar className='w-8 h-8'>
+                                                        <AvatarImage src={getRatedByAvatar(row.scores, sumupaiWithCategory)} alt={getRatedByName(row.scores, sumupaiWithCategory)} />
+                                                        <AvatarFallback>{getRatedByName(row.scores, sumupaiWithCategory)}</AvatarFallback>
+                                                        </Avatar>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>
+                                                        <p>{row.createdBy.fullName}</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
+                                        </div>
+                                    ) : <p>-</p> }
+                                </td>
+                                <td width={200} className="p-1 border-b text-sm">{!row.notRatedWithCategory ? (getTotalRatingCount(row.scores, sumupaiWithCategory)) : '-'}</td>
                                 <td className="p-2 text-right border-b flex items-start justify-evenly gap-4">
                                     {ConfirmDialog(row.id)}
                                 </td>
