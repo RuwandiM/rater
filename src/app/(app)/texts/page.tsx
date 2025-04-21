@@ -154,7 +154,7 @@ export default function StickyHeaderTable() {
                     <thead className="sticky top-0 bg-gray-100 shadow-sm z-10">
                         <tr>
                             <th className="p-2 text-center border-b">#</th>
-                            <th className="p-2 text-left border-b">Original Text</th>
+                            <th className="p-2 text-left border-b">Original Text(test change)</th>
                             <th className="p-2 text-left border-b">Created By</th>
                             <th className="p-2 text-left border-b">Created At</th>
                             <th className="p-2 text-left border-b">Evaluated By</th>
