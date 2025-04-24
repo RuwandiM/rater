@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { useUser } from "@clerk/nextjs";
 
-const selectedAi = "sumup-ai-with-category";
+const selectedAi = "sumup-ai-without-category";
 
 type documentType = {
   id: string,
@@ -38,13 +38,13 @@ export default function Home() {
   const getRandomDocument = async () => {
     try {
       setIsLoading(true);
-      const summariesRef = collection(db, 'evaluated-summaries');
+      const summariesRef = collection(db, 'evaluated-summaries-900');
       const snapshot = await getDocs(summariesRef);
       let filteredDocs: any = [];
       snapshot.forEach((doc) => {
         const data = doc.data();
 
-        if (!!data.notRatedWithCategory) {
+        if (!!data.notRatedWithoutCategory) {
           filteredDocs.push({ id: doc.id, ...data });
         }
       });
@@ -87,7 +87,7 @@ export default function Home() {
       if (!document?.id) {
         throw new Error("Document ID is undefined");
       }
-      const docRef = doc(db, 'evaluated-summaries', document.id);
+      const docRef = doc(db, 'evaluated-summaries-900', document.id);
       const Doc = await getDoc(docRef);
       if (!doc) {
         throw new Error("Document not found");
@@ -112,7 +112,7 @@ export default function Home() {
             scores: scores
           }
         },
-        notRatedWithCategory: false
+        notRatedWithoutCategory: false
       })
       console.log("Scores submitted successfully");
 

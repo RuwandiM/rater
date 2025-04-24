@@ -16,7 +16,7 @@ import { collection, doc, getDoc, getDocs, updateDoc  } from "@firebase/firestor
 import db from "../../../firebase/firestore"
 import { useUser } from "@clerk/nextjs"
 
-const sumupaiWithCategory = "sumup-ai-with-category";
+const sumupaiWithoutCategory = "sumup-ai-without-category";
 
 const headers = [
     {
@@ -26,7 +26,7 @@ const headers = [
     },
     {
         title: "Sumup-ai Generated Summary",
-        name: "sumup-ai",
+        name: "sumup-ai-without-category",
         description: "Sumup-ai"
     },
 ]
@@ -64,12 +64,12 @@ export function AddTextDrawer() {
         console.log("call.........")
         try {
             setStatus(STATUS.LOADING)
-            const summariesRef = collection(db, 'evaluated-summaries');
+            const summariesRef = collection(db, 'evaluated-summaries-900');
             const snapshot = await getDocs(summariesRef);
             let filteredDocs: any = [];
             snapshot.forEach((doc) => {
                 const data = doc.data();
-                if (data.notRatedWithCategory == undefined) {
+                if (data.notRatedWithoutCategory == undefined) {
                     filteredDocs.push({ id: doc.id, ...data });
                 }
             });
@@ -130,7 +130,8 @@ export function AddTextDrawer() {
             if (!document?.id) {
                 throw new Error("Document ID is undefined");
             }
-            const docRef = doc(db, 'evaluated-summaries', document.id);
+            const docRef = doc(db, 'evaluated-summaries-900', document.id);
+            console.log("document ID", document.id);
             const Doc = await getDoc(docRef);
             if (!Doc.exists()) {
                 throw new Error("Document not found");
@@ -144,9 +145,9 @@ export function AddTextDrawer() {
             await updateDoc(docRef, {
                 text: {
                     ...data.text,
-                    [sumupaiWithCategory]: formData["sumup-ai"]
+                    [sumupaiWithoutCategory]: formData["sumup-ai-without-category"]
                 },
-                notRatedWithCategory: true,
+                notRatedWithoutCategory: true,
                 updatedAt: new Date().toISOString()
             })
             console.log("Scores submitted successfully");

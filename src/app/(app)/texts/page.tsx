@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from '@/components/ui/button';
 
-const sumupaiWithoutCategory = "sumup-ai";
+const sumupaiWithoutCategory = "sumup-ai-without-category";
 const sumupaiWithCategory = "sumup-ai-with-category";
 
 export default function StickyHeaderTable() {
@@ -30,7 +30,7 @@ export default function StickyHeaderTable() {
     const fetchData = async () => {
         try {
             setIsDataLoading(true)
-            const q = query(collection(db, "evaluated-summaries"), orderBy("createdAt", "desc"))
+            const q = query(collection(db, "evaluated-summaries-900"), orderBy("createdAt", "desc"))
             const querySnapshot = await getDocs(q)
             const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
             setTableData(data)
@@ -44,7 +44,7 @@ export default function StickyHeaderTable() {
     const handleDelete = async () => {
         if (deleteId) {
             try {
-                const docRef = doc(db, "evaluated-summaries", deleteId)
+                const docRef = doc(db, "evaluated-summaries-900", deleteId)
                 await deleteDoc(docRef)
                 setTableData(tableData.filter((item: any) => item.id !== deleteId))
                 console.log(`Document with ID ${deleteId} deleted successfully.`)
@@ -169,7 +169,7 @@ export default function StickyHeaderTable() {
                                 <td width={50} className="p-2 border-b text-center font-semibold text-sm">{index + 1}</td>
                                 <td width={400} className="p-2 border-b text-sm">{truncateText(row?.text?.original, 15)}</td>
                                 <td width={120} className="p-2 border-b">
-                                    {!row.notRated ? (
+                                    {!row.notRatedWithoutCategory ? (
                                         <div className="flex items-center justify-center space-x-2">
                                             <TooltipProvider>
                                                 <Tooltip>
@@ -187,9 +187,9 @@ export default function StickyHeaderTable() {
                                         </div>
                                     ) : <p>-</p> }
                                 </td>
-                                <td width={200} className="p-1 border-b text-sm">{!row.notRated ? (getTotalRatingCount(row.scores, sumupaiWithoutCategory)) : '-'}</td>
+                                <td width={200} className="p-1 border-b text-sm">{!row.notRatedWithoutCategory ? (getTotalRatingCount(row.scores, sumupaiWithoutCategory)) : '-'}</td>
                                 <td width={120} className="p-2 border-b">
-                                    {!row.notRatedWithCategory ? (
+                                    {!row.notRatedWithoutCategory ? (
                                         <div className="flex items-center justify-center space-x-2">
                                             <TooltipProvider>
                                                 <Tooltip>
@@ -207,7 +207,7 @@ export default function StickyHeaderTable() {
                                         </div>
                                     ) : <p>-</p> }
                                 </td>
-                                <td width={200} className="p-1 border-b text-sm">{!row.notRatedWithCategory ? (getTotalRatingCount(row.scores, sumupaiWithCategory)) : '-'}</td>
+                                <td width={200} className="p-1 border-b text-sm">{!row.notRatedWithoutCategory ? (getTotalRatingCount(row.scores, sumupaiWithCategory)) : '-'}</td>
                                 <td className="p-2 text-right border-b flex items-start justify-evenly gap-4">
                                     {ConfirmDialog(row.id)}
                                 </td>
