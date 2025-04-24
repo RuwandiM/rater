@@ -88,6 +88,7 @@ export default function Home() {
         throw new Error("Document ID is undefined");
       }
       const docRef = doc(db, 'evaluated-summaries-900', document.id);
+      console.log("rated document", document.id);
       const Doc = await getDoc(docRef);
       if (!doc) {
         throw new Error("Document not found");

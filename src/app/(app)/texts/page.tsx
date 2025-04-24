@@ -165,11 +165,11 @@ export default function StickyHeaderTable() {
                     </thead>
                     <tbody>
                         {tableData.map((row: any, index: number) => (
-                            <tr key={row.id} className={`hover:bg-gray-100 p-2 `}>
+                            <tr key={row.id} className={`hover:bg-gray-100 p-2 `}>              
                                 <td width={50} className="p-2 border-b text-center font-semibold text-sm">{index + 1}</td>
                                 <td width={400} className="p-2 border-b text-sm">{truncateText(row?.text?.original, 15)}</td>
                                 <td width={120} className="p-2 border-b">
-                                    {!row.notRatedWithoutCategory ? (
+                                    {row.notRatedWithoutCategory!= undefined && !row.notRatedWithoutCategory ? (
                                         <div className="flex items-center justify-center space-x-2">
                                             <TooltipProvider>
                                                 <Tooltip>
@@ -187,9 +187,9 @@ export default function StickyHeaderTable() {
                                         </div>
                                     ) : <p>-</p> }
                                 </td>
-                                <td width={200} className="p-1 border-b text-sm">{!row.notRatedWithoutCategory ? (getTotalRatingCount(row.scores, sumupaiWithoutCategory)) : '-'}</td>
+                                <td width={200} className="p-1 border-b text-sm">{row.notRatedWithoutCategory!= undefined && !row.notRatedWithoutCategory ? (getTotalRatingCount(row.scores, sumupaiWithoutCategory)) : '-'}</td>
                                 <td width={120} className="p-2 border-b">
-                                    {!row.notRatedWithoutCategory ? (
+                                    {!row.notRatedWithCategory ? (
                                         <div className="flex items-center justify-center space-x-2">
                                             <TooltipProvider>
                                                 <Tooltip>
@@ -207,7 +207,7 @@ export default function StickyHeaderTable() {
                                         </div>
                                     ) : <p>-</p> }
                                 </td>
-                                <td width={200} className="p-1 border-b text-sm">{!row.notRatedWithoutCategory ? (getTotalRatingCount(row.scores, sumupaiWithCategory)) : '-'}</td>
+                                <td width={200} className="p-1 border-b text-sm">{!row.notRatedWithCategory ? (getTotalRatingCount(row.scores, sumupaiWithCategory)) : '-'}</td>
                                 <td className="p-2 text-right border-b flex items-start justify-evenly gap-4">
                                     {ConfirmDialog(row.id)}
                                 </td>
