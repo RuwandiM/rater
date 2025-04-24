@@ -25,8 +25,8 @@ const headers = [
     },
     {
         title: "Sumup-ai Generated Summary",
-        name: "sumup-ai",
-        description: "Sumup-ai"
+        name: "sumup-ai-with-category",
+        description: "Sumup-ai Generated Summary"
     },
 ]
 
@@ -84,14 +84,14 @@ export function AddTextDrawer() {
 
         try {
             setStatus(STATUS.LOADING)
-            const doc = await addDoc(collection(db, 'evaluated-summaries'), {
+            const doc = await addDoc(collection(db, 'evaluated-summaries-900'), {
                 createdBy: {
                     id: user?.id,
                     email: user?.emailAddresses[0].emailAddress,
                     fullName: user?.fullName,
                     imageUrl: user?.imageUrl
                 },
-                notRated: true,
+                notRatedWithCategory: true,
                 text: formData,
                 createdAt: new Date().toISOString()
             })

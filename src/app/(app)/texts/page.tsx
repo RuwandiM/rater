@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from '@/components/ui/button';
 
-const selectedAi = "sumup-ai";
+const selectedAi = "sumup-ai-with-category";
 
 export default function StickyHeaderTable() {
     const [tableData, setTableData] = useState<any>([])
@@ -29,7 +29,7 @@ export default function StickyHeaderTable() {
     const fetchData = async () => {
         try {
             setIsDataLoading(true)
-            const q = query(collection(db, "evaluated-summaries"), orderBy("createdAt", "desc"))
+            const q = query(collection(db, "evaluated-summaries-900"), orderBy("createdAt", "desc"))
             const querySnapshot = await getDocs(q)
             const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
             setTableData(data)
@@ -43,7 +43,7 @@ export default function StickyHeaderTable() {
     const handleDelete = async () => {
         if (deleteId) {
             try {
-                const docRef = doc(db, "evaluated-summaries", deleteId)
+                const docRef = doc(db, "evaluated-summaries-900", deleteId)
                 await deleteDoc(docRef)
                 setTableData(tableData.filter((item: any) => item.id !== deleteId))
                 console.log(`Document with ID ${deleteId} deleted successfully.`)
@@ -157,8 +157,8 @@ export default function StickyHeaderTable() {
                             <th className="p-2 text-left border-b">Original Text(test change)</th>
                             <th className="p-2 text-left border-b">Created By</th>
                             <th className="p-2 text-left border-b">Created At</th>
-                            <th className="p-2 text-left border-b">Evaluated By</th>
-                            <th className="p-2 text-left border-b">Evaluated score</th>
+                            <th className="p-2 text-left border-b">Evaluated By(with cat.)</th>
+                            <th className="p-2 text-left border-b">Evaluated score(with cat.)</th>
                             <th className="p-2 text-right border-b">Action</th>
                         </tr>
                     </thead>
@@ -186,7 +186,7 @@ export default function StickyHeaderTable() {
                                 </td>
                                 <td width={200} className="p-1 border-b text-sm">{formatDate(row.createdAt)}</td>
                                 <td width={120} className="p-2 border-b">
-                                    {!row.notRated ? (
+                                    {!row.notRatedWithCategory ? (
                                         <div className="flex items-center justify-center space-x-2">
                                             <TooltipProvider>
                                                 <Tooltip>
@@ -204,7 +204,7 @@ export default function StickyHeaderTable() {
                                         </div>
                                     ) : <p>-</p> }
                                 </td>
-                                <td width={200} className="p-1 border-b text-sm">{!row.notRated ? (getTotalRatingCount(row.scores, selectedAi)) : '-'}</td>
+                                <td width={200} className="p-1 border-b text-sm">{!row.notRatedWithCategory ? (getTotalRatingCount(row.scores, selectedAi)) : '-'}</td>
                                 <td className="p-2 text-right border-b flex items-start justify-evenly gap-4">
                                     {ConfirmDialog(row.id)}
                                 </td>
